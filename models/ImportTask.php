@@ -7,6 +7,7 @@
  */
 namespace skeeks\cms\import\models;
 
+use skeeks\cms\import\ImportHandler;
 use skeeks\cms\import\ImportHandlerInterface;
 use skeeks\cms\models\behaviors\Serialize;
 use Yii;
@@ -25,7 +26,7 @@ use yii\helpers\ArrayHelper;
  * @property string $component
  * @property string $component_settings
  *
- * @property Handler $handler
+ * @property ImportHandler $handler
  */
 class ImportTask extends \skeeks\cms\models\Core
 {

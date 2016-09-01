@@ -26,6 +26,15 @@
         [
             'id',
             'name',
+            [
+                'class' => \yii\grid\DataColumn::className(),
+                'attribute' => 'component',
+                'filter' => \yii\helpers\ArrayHelper::map(\Yii::$app->cmsImport->handlers, 'id', 'name'),
+                'value'  => function(\skeeks\cms\import\models\ImportTask $importTask)
+                {
+                    return $importTask->handler->name;
+                }
+            ]
         ]
 
     ]); ?>
