@@ -7,6 +7,7 @@
  */
 namespace skeeks\cms\import;
 use skeeks\cms\base\ConfigFormInterface;
+use skeeks\cms\import\models\ImportTask;
 use yii\base\Component;
 use yii\base\Model;
 use yii\widgets\ActiveForm;
@@ -31,6 +32,11 @@ abstract class ImportHandler extends Model implements ImportHandlerInterface, Co
      * @var string Import type csv, xml or null
      */
     public $type;
+
+    /**
+     * @var ImportTask
+     */
+    public $taskModel;
 
     /**
      * @param ActiveForm $form
