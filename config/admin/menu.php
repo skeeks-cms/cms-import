@@ -19,14 +19,14 @@ return
             "import" =>
             [
                 "label"     => \Yii::t('skeeks/import', "Import"),
-                "img"       => ['\skeeks\cms\import\assets\ImportAsset', 'icons/export.png'],
+                "img"       => ['\skeeks\cms\import\assets\ImportAsset', 'icons/import.png'],
                 "url"       => ["cmsImport/admin-import-task"],
 
                 'items' =>
                 [
                     [
                         "label"     => \Yii::t('skeeks/import', "All kinds of imports"),
-                        "img"       => ['\skeeks\cms\import\assets\ImportAsset', 'icons/export.png'],
+                        "img"       => ['\skeeks\cms\import\assets\ImportAsset', 'icons/import.png'],
                         "url"       => ["cmsImport/admin-import-task"],
                     ]/*,
 
