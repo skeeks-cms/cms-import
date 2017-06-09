@@ -2,10 +2,11 @@
 /**
  * @author Semenov Alexander <semenov@skeeks.com>
  * @link http://skeeks.com/
- * @copyright 2010 SkeekS (ÑêèêÑ)
+ * @copyright 2010 SkeekS (ï¿½ï¿½ï¿½ï¿½ï¿½)
  * @date 01.09.2016
  */
 namespace skeeks\cms\import;
+use skeeks\cms\import\helpers\ImportResult;
 use yii\base\Component;
 
 /**
@@ -17,4 +18,9 @@ use yii\base\Component;
  * @package skeeks\cms\import
  */
 interface ImportHandlerInterface
-{}
+{
+    /**
+     * @return ImportResult
+     */
+    public function execute();
+}

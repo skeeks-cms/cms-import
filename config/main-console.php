@@ -23,7 +23,8 @@ return [
     'modules' =>
     [
         'cmsImport' => [
-            'class'         => 'skeeks\cms\import\ImportModule',
+            'class'                 => 'skeeks\cms\import\ImportModule',
+            'controllerNamespace'   => 'skeeks\cms\import\console\controllers'
         ]
     ]
 ];

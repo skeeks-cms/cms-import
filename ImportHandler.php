@@ -2,11 +2,12 @@
 /**
  * @author Semenov Alexander <semenov@skeeks.com>
  * @link http://skeeks.com/
- * @copyright 2010 SkeekS (ÑêèêÑ)
+ * @copyright 2010 SkeekS (ï¿½ï¿½ï¿½ï¿½ï¿½)
  * @date 01.09.2016
  */
 namespace skeeks\cms\import;
 use skeeks\cms\base\ConfigFormInterface;
+use skeeks\cms\import\helpers\ImportResult;
 use skeeks\cms\import\models\ImportTask;
 use yii\base\Component;
 use yii\base\Model;
@@ -50,5 +51,46 @@ abstract class ImportHandler extends Model implements ImportHandlerInterface, Co
     public function renderWidget(ActiveForm $form)
     {
         echo 'Not found widget';
+    }
+
+
+
+
+
+    /**
+     * @return ImportResult
+     */
+    public function execute()
+    {
+        return $this->result;
+    }
+
+    /**
+     * @var ImportResult
+     */
+    protected $_result = null;
+
+    /**
+     * @return null|ImportResult
+     */
+    public function getResult()
+    {
+        if (!$this->_result)
+        {
+            $this->_result = new ImportResult();
+        }
+
+        return $this->_result;
+    }
+
+    /**
+     * @param ImportResult $exportResult
+     *
+     * @return $this
+     */
+    public function setResult(ImportResult $exportResult)
+    {
+        $this->_result = $exportResult;
+        return $this;
     }
 }
