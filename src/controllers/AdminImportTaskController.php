@@ -266,4 +266,73 @@ class AdminImportTaskController extends AdminModelEditorController
         return $rr;
     }
 
+
+
+
+    public function actionImport()
+    {
+        $rr = new RequestResponse();
+
+        $model = new ImportTask();
+        $model->loadDefaultValues();
+
+        if ($post = \Yii::$app->request->post())
+        {
+            $model->load($post);
+        }
+
+        $handler = $model->handler;
+        if ($handler)
+        {
+            if ($post = \Yii::$app->request->post())
+            {
+                $handler->load($post);
+            }
+        } else
+        {
+            $rr->success = false;
+            $rr->message = 'Компонент не настроен';
+            return $rr;
+        }
+
+        $model->validate();
+        $handler->validate();
+
+        if (!$model->errors && !$handler->errors)
+        {
+            $rr->success = true;
+
+            try
+            {
+                $result = $handler->execute();
+
+                $log = (string) $result;
+
+                $rr->success = true;
+                $rr->data = [
+                    'html'           => <<<HTML
+                    <br />
+                    <br />
+<div class="alert-success alert fade in">
+Файл успешно сформирован: <a href="{$handler->file_path}" data-pjax="0" target="_blank">{$handler->file_path}</a><br />
+</div>
+<textarea class="form-control" rows="20" readonly>{$log}</textarea>
+HTML
+,
+                ];
+            } catch (\Exception $e)
+            {
+                $rr->success = false;
+                $rr->message = $e->getMessage();
+            }
+
+
+        } else
+        {
+            $rr->success = false;
+            $rr->message = 'Проверьте правильность указанных данных';
+        }
+
+        return $rr;
+    }
 }

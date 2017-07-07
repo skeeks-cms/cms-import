@@ -9,6 +9,7 @@ namespace skeeks\cms\import;
 use skeeks\cms\base\ConfigFormInterface;
 use skeeks\cms\import\helpers\ImportResult;
 use skeeks\cms\import\models\ImportTask;
+use skeeks\cms\import\widgets\ImportWidget;
 use yii\base\Component;
 use yii\base\Model;
 use yii\widgets\ActiveForm;
@@ -50,7 +51,9 @@ abstract class ImportHandler extends Model implements ImportHandlerInterface, Co
      */
     public function renderWidget(ActiveForm $form)
     {
-        echo 'Not found widget';
+        echo ImportWidget::widget([
+            'activeForm' => $form
+        ]);
     }
 
 

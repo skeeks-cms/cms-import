@@ -21,7 +21,7 @@
 	},
     "autoload": {
         "psr-4": {
-            "skeeks\\cms\\import\\": ""
+            "skeeks\\cms\\import\\": "src/"
         }
     }
 }
