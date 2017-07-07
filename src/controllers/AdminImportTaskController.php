@@ -311,11 +311,6 @@ class AdminImportTaskController extends AdminModelEditorController
                 $rr->success = true;
                 $rr->data = [
                     'html'           => <<<HTML
-                    <br />
-                    <br />
-<div class="alert-success alert fade in">
-Файл успешно сформирован: <a href="{$handler->file_path}" data-pjax="0" target="_blank">{$handler->file_path}</a><br />
-</div>
 <textarea class="form-control" rows="20" readonly>{$log}</textarea>
 HTML
 ,
