@@ -80,7 +80,7 @@ class AdminImportTaskController extends AdminModelEditorController
                     \Yii::$app->getSession()->setFlash('success', \Yii::t('app','Saved'));
 
                     return $this->redirect(
-                        $this->indexUrl
+                        $this->url
                     );
 
                 } else
@@ -138,7 +138,7 @@ class AdminImportTaskController extends AdminModelEditorController
                         } else
                         {
                             return $this->redirect(
-                                $this->indexUrl
+                                $this->url
                             );
                         }
 

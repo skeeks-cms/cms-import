@@ -52,7 +52,7 @@ use skeeks\cms\modules\admin\widgets\form\ActiveFormUseTab as ActiveForm;
 --><?/* endif; */?>
 
 
-<?= $form->buttonsStandart($model, ['save', 'close']); ?>
+<?= $form->buttonsStandart($model); ?>
 <? if ($handler) : ?>
 
     <hr />

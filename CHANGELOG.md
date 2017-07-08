@@ -1,6 +1,10 @@
 CHANGELOG
 ==============
 
+1.0.0-beta2.pre
+-----------------
+ * update 
+ 
 1.0.0-beta
 -----------------
  * console app
