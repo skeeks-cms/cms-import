@@ -20,6 +20,40 @@ use skeeks\cms\modules\admin\widgets\form\ActiveFormUseTab as ActiveForm;
     'enableAjaxValidation'                          => false,
 ]); ?>
 
+<? $this->registerJs(<<<JS
+
+(function(sx, $, _)
+{
+    sx.classes.Import = sx.classes.Component.extend({
+
+        _onDomReady: function()
+        {
+            var self = this;
+
+            $("[data-form-reload=true]").on('change', function()
+            {
+                self.update();
+            });
+        },
+
+        update: function()
+        {
+            _.delay(function()
+            {
+                var jForm = $("#sx-import-form");
+                jForm.append($('<input>', {'type': 'hidden', 'name' : 'sx-not-submit', 'value': 'true'}));
+                jForm.submit();
+            }, 200);
+        }
+    });
+
+    sx.Import = new sx.classes.Import();
+})(sx, sx.$, sx._);
+
+
+JS
+); ?>
+
 
     <?= \skeeks\cms\modules\admin\widgets\BlockTitleWidget::widget(['content' => 'Базовые настройки']); ?>
 
