@@ -23,5 +23,11 @@
         "psr-4": {
             "skeeks\\cms\\import\\": "src/"
         }
+    },
+    "extra": {
+        "config-plugin": {
+            "web": "src/config/main.php",
+            "console": "src/config/main-console.php"
+        }
     }
 }
