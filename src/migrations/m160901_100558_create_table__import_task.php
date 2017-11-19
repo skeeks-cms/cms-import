@@ -42,14 +42,12 @@ class m160901_100558_create_table__import_task extends Migration
 
         ], $tableOptions);
 
-        $this->createIndex('updated_by', '{{%import_task}}', 'updated_by');
-        $this->createIndex('created_by', '{{%import_task}}', 'created_by');
-        $this->createIndex('created_at', '{{%import_task}}', 'created_at');
-        $this->createIndex('updated_at', '{{%import_task}}', 'updated_at');
+        $this->createIndex('import_task__updated_by', '{{%import_task}}', 'updated_by');
+        $this->createIndex('import_task__created_by', '{{%import_task}}', 'created_by');
+        $this->createIndex('import_task__created_at', '{{%import_task}}', 'created_at');
+        $this->createIndex('import_task__updated_at', '{{%import_task}}', 'updated_at');
 
-        $this->createIndex('name', '{{%import_task}}', 'name');
-
-        $this->execute("ALTER TABLE {{%import_task}} COMMENT = 'Tasks for import';");
+        $this->createIndex('import_task__name', '{{%import_task}}', 'name');
 
         $this->addForeignKey(
             'import_task__created_by', "{{%import_task}}",

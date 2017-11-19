@@ -1,6 +1,10 @@
 CHANGELOG
 ==============
 
+1.1.1
+-----------------
+ * Pgsql support
+ 
 1.1.0
 -----------------
  * Using composer-config-plugin
