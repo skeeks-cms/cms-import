@@ -4,7 +4,7 @@
 	"keywords": ["yii", "skeeks", "framework", "component"],
   	"homepage": "http://cms.skeeks.com/",
 	"type": "yii2-extension",
-	"license": "GPL-3.0+",
+	"license": "BSD-3-Clause",
 	"support": {
         "issues": "http://skeeks.com/",
         "wiki": "http://en.cms.skeeks.com/docs/",
@@ -17,7 +17,7 @@
 		}
 	],
 	"require": {
-		"skeeks/cms": "*"
+		"skeeks/cms": "^5.0"
 	},
     "autoload": {
         "psr-4": {
@@ -26,8 +26,8 @@
     },
     "extra": {
         "config-plugin": {
-            "web": "src/config/main.php",
-            "console": "src/config/main-console.php"
+            "web": "src/config/web.php",
+            "console": "src/config/console.php"
         }
     }
 }
