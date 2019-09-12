@@ -42,7 +42,7 @@ class ExecuteController extends Controller
         if (!$handler)
         {
             $this->stdout("Не найден обработчик $exportTask->component\n", Console::FG_RED);
-            print_r(array_keys(\Yii::$app->cmsExport->handlers));
+            print_r(array_keys(\Yii::$app->cmsImport->handlers));
             return false;
         }
 
