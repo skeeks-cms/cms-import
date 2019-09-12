@@ -7,6 +7,8 @@
  */
 namespace skeeks\cms\import;
 use yii\base\Component;
+use yii\base\InvalidArgumentException;
+use yii\base\InvalidParamException;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -50,7 +52,7 @@ class ImportComponent extends Component
     public function getHandler($id)
     {
         if (!array_key_exists($id, $this->_handlers)) {
-            throw new InvalidParamException("Unknown auth client '{$id}'.");
+            throw new InvalidArgumentException("Unknown auth client '{$id}'.");
         }
         if (!is_object($this->_handlers[$id])) {
             $this->_handlers[$id] = $this->createHandler($id, $this->_handlers[$id]);
