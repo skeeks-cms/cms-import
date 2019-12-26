@@ -6,19 +6,21 @@
  * @date 15.04.2016
  */
 namespace skeeks\cms\import\controllers;
+use skeeks\cms\backend\controllers\BackendModelStandartController;
 use skeeks\cms\helpers\RequestResponse;
 use skeeks\cms\import\models\ImportTask;
 use skeeks\cms\modules\admin\actions\modelEditor\AdminModelEditorAction;
 use skeeks\cms\modules\admin\controllers\AdminController;
 use skeeks\cms\modules\admin\controllers\AdminModelEditorController;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /**
  * Class AdminImportTaskController
  * @package skeeks\cms\import\controllers
  */
-class AdminImportTaskController extends AdminModelEditorController
+class AdminImportTaskController extends BackendModelStandartController
 {
     public $notSubmitParam = 'sx-not-submit';
 
@@ -26,13 +28,49 @@ class AdminImportTaskController extends AdminModelEditorController
     {
         $this->name                 = \Yii::t('skeeks/import', 'Tasks on imports');
         $this->modelShowAttribute   = "id";
-        $this->modelClassName       = ImportTask::className();
+        $this->modelClassName       = ImportTask::class;
     }
 
     public function actions()
     {
-        return ArrayHelper::merge(parent::actions(),
-        [
+        return ArrayHelper::merge(parent::actions(), [
+            'index' => [
+                'grid' => [
+                    'visibleColumns' => [
+                        'checkbox',
+                        'actions',
+
+                        'name',
+                        'component',
+                    ],
+                    'columns' => [
+                        'name' => [
+                            'format' => 'raw',
+                            'value' => function(ImportTask $task) {
+                                $result = Html::a($task->asText, '#', [
+                                    'class' => 'sx-trigger-action'
+                                ]);
+                                if ($task->description) {
+                                    $result .= "<br />" . Html::tag('small', $task->description);
+                                }
+                                return $result;
+                            }
+                        ],
+                        'component' => [
+                            'format' => 'raw',
+                            'value' => function(ImportTask $task) {
+                                $result = "";
+                                if ($task->handler) {
+                                    $result = $task->handler->name . "<br />";
+                                }
+                                $result .= $task->component;
+
+                                return $result;
+                            }
+                        ]
+                    ]
+                ]
+            ],
             'create' =>
             [
                 'callback'         => [$this, 'create'],
