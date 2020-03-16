@@ -8,6 +8,7 @@
 namespace skeeks\cms\import\controllers;
 use skeeks\cms\backend\controllers\BackendModelStandartController;
 use skeeks\cms\helpers\RequestResponse;
+use skeeks\cms\import\ImportHandler;
 use skeeks\cms\import\models\ImportTask;
 use skeeks\cms\modules\admin\actions\modelEditor\AdminModelEditorAction;
 use skeeks\cms\modules\admin\controllers\AdminController;
@@ -137,6 +138,7 @@ class AdminImportTaskController extends BackendModelStandartController
 
     public function update()
     {
+
         $rr = new RequestResponse();
 
         $model = $this->model;
@@ -206,6 +208,9 @@ class AdminImportTaskController extends BackendModelStandartController
             $model->load($post);
         }
 
+        /**
+         * @var $handler ImportHandler
+         */
         $handler = $model->handler;
         if ($handler)
         {
@@ -226,6 +231,8 @@ class AdminImportTaskController extends BackendModelStandartController
         if (!$model->errors && !$handler->errors)
         {
             $rr->success = true;
+
+            $handler->beforeExecute();
 
             $rr->data = [
                 'step'          => (int) $handler->step,

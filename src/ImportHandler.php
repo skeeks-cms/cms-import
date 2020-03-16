@@ -57,7 +57,13 @@ abstract class ImportHandler extends Model implements ImportHandlerInterface, Co
     }
 
 
-
+    /**
+     * @return bool
+     */
+    public function beforeExecute()
+    {
+        return true;
+    }
 
 
     /**
@@ -91,7 +97,7 @@ abstract class ImportHandler extends Model implements ImportHandlerInterface, Co
      *
      * @return $this
      */
-    public function setResult(ImportResult $exportResult)
+    public function setResult(ImportResult $exportResult = null)
     {
         $this->_result = $exportResult;
         return $this;
