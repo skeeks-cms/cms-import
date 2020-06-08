@@ -38,6 +38,8 @@ class AdminImportTaskController extends BackendModelStandartController
     {
         return ArrayHelper::merge(parent::actions(), [
             'index' => [
+                'filters' => false,
+                'backendShowings' => false,
                 'grid' => [
                     'visibleColumns' => [
                         'checkbox',
