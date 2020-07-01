@@ -13,6 +13,7 @@ use skeeks\cms\import\models\ImportTask;
 use skeeks\cms\modules\admin\actions\modelEditor\AdminModelEditorAction;
 use skeeks\cms\modules\admin\controllers\AdminController;
 use skeeks\cms\modules\admin\controllers\AdminModelEditorController;
+use yii\base\Event;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -41,6 +42,17 @@ class AdminImportTaskController extends BackendModelStandartController
                 'filters' => false,
                 'backendShowings' => false,
                 'grid' => [
+                    
+                    'on init' => function (Event $e) {
+                        /**
+                         * @var $dataProvider ActiveDataProvider
+                         * @var $query ActiveQuery
+                         */
+                        $query = $e->sender->dataProvider->query;
+
+                        $query->andWhere(['cms_site_id' => \Yii::$app->skeeks->site->id]);
+                    },
+                    
                     'visibleColumns' => [
                         'checkbox',
                         'actions',

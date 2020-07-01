@@ -5,27 +5,32 @@
  * @copyright 2010 SkeekS (СкикС)
  * @date 31.08.2016
  */
+
 namespace skeeks\cms\import\models;
 
 use skeeks\cms\import\ImportHandler;
 use skeeks\cms\import\ImportHandlerInterface;
 use skeeks\cms\models\behaviors\Serialize;
+use skeeks\cms\models\CmsSite;
 use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%import_task}}".
  *
- * @property integer $id
- * @property integer $created_by
- * @property integer $updated_by
- * @property integer $created_at
- * @property integer $updated_at
- * @property string $name
- * @property string $description
- * @property string $component
- * @property string $component_settings
- *
+ * @property integer       $id
+ * @property integer       $created_by
+ * @property integer       $updated_by
+ * @property integer       $created_at
+ * @property integer       $updated_at
+ * @property string        $name
+ * @property string        $description
+ * @property string        $component
+ * @property string        $component_settings
+ * @property integer       $cms_site_id
+ * 
+ * 
+ * @property CmsSite       $cmsSite
  * @property ImportHandler $handler
  */
 class ImportTask extends \skeeks\cms\models\Core
@@ -42,10 +47,10 @@ class ImportTask extends \skeeks\cms\models\Core
     {
         return ArrayHelper::merge(parent::behaviors(), [
             Serialize::className() =>
-            [
-                'class' => Serialize::className(),
-                'fields' => ['component_settings']
-            ]
+                [
+                    'class'  => Serialize::className(),
+                    'fields' => ['component_settings'],
+                ],
         ]);
     }
 
@@ -60,7 +65,28 @@ class ImportTask extends \skeeks\cms\models\Core
             [['component_settings'], 'safe'],
             [['description'], 'string'],
             [['name', 'component'], 'string', 'max' => 255],
+
+            [['cms_site_id',], 'integer'],
+
+            [
+                'cms_site_id',
+                'default',
+                'value' => function () {
+                    if (\Yii::$app->skeeks->site) {
+                        return \Yii::$app->skeeks->site->id;
+                    }
+                },
+            ],
         ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCmsSite()
+    {
+        $class = \Yii::$app->skeeks->siteClass;
+        return $this->hasOne($class, ['id' => 'cms_site_id']);
     }
 
     /**
@@ -69,10 +95,10 @@ class ImportTask extends \skeeks\cms\models\Core
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
-            'id' => Yii::t('skeeks/import', 'ID'),
-            'name' => Yii::t('skeeks/import', 'Name'),
-            'description' => Yii::t('skeeks/import', 'Description'),
-            'component' => Yii::t('skeeks/import', 'Component'),
+            'id'                 => Yii::t('skeeks/import', 'ID'),
+            'name'               => Yii::t('skeeks/import', 'Name'),
+            'description'        => Yii::t('skeeks/import', 'Description'),
+            'component'          => Yii::t('skeeks/import', 'Component'),
             'component_settings' => Yii::t('skeeks/import', 'Component Settings'),
         ]);
     }
@@ -83,10 +109,8 @@ class ImportTask extends \skeeks\cms\models\Core
      */
     public function getHandler()
     {
-        if ($this->component)
-        {
-            try
-            {
+        if ($this->component) {
+            try {
                 /**
                  * @var $component Component
                  */
@@ -95,8 +119,7 @@ class ImportTask extends \skeeks\cms\models\Core
                 $component->load($this->component_settings, "");
 
                 return $component;
-            } catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 return false;
             }
 

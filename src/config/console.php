@@ -1,30 +1,37 @@
 <?php
 return [
-    'components' =>
-    [
+
+    'controllerMap' => [
+        'migrate' => [
+            'migrationPath' => [
+                '@skeeks/cms/import/migrations',
+            ],
+        ],
+    ],
+
+    'components' => [
         'cmsImport' => [
-            'class'     => 'skeeks\cms\import\ImportComponent',
+            'class' => 'skeeks\cms\import\ImportComponent',
         ],
 
         'i18n' => [
             'translations' =>
-            [
-                'skeeks/import' => [
-                    'class'             => 'yii\i18n\PhpMessageSource',
-                    'basePath'          => '@skeeks/cms/import/messages',
-                    'fileMap' => [
-                        'skeeks/import' => 'main.php',
+                [
+                    'skeeks/import' => [
+                        'class'    => 'yii\i18n\PhpMessageSource',
+                        'basePath' => '@skeeks/cms/import/messages',
+                        'fileMap'  => [
+                            'skeeks/import' => 'main.php',
+                        ],
                     ],
-                ]
-            ]
-        ]
+                ],
+        ],
     ],
 
-    'modules' =>
-    [
+    'modules' => [
         'cmsImport' => [
-            'class'                 => 'skeeks\cms\import\ImportModule',
-            'controllerNamespace'   => 'skeeks\cms\import\console\controllers'
-        ]
-    ]
+            'class'               => 'skeeks\cms\import\ImportModule',
+            'controllerNamespace' => 'skeeks\cms\import\console\controllers',
+        ],
+    ],
 ];
