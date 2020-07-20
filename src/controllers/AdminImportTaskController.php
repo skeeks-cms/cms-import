@@ -13,6 +13,7 @@ use skeeks\cms\import\models\ImportTask;
 use skeeks\cms\modules\admin\actions\modelEditor\AdminModelEditorAction;
 use skeeks\cms\modules\admin\controllers\AdminController;
 use skeeks\cms\modules\admin\controllers\AdminModelEditorController;
+use skeeks\cms\widgets\Alert;
 use yii\base\Event;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -39,6 +40,24 @@ class AdminImportTaskController extends BackendModelStandartController
     {
         return ArrayHelper::merge(parent::actions(), [
             'index' => [
+                'on afterRender' => function (Event $e) {
+                    $site_id = \Yii::$app->skeeks->site->id;
+                    $e->content = \yii\bootstrap\Alert::widget([
+                        'closeButton' => false,
+                        'options'     => [
+                            'class' => 'alert-default',
+                        ],
+
+                        'body' => <<<HTML
+<p>Чтобы запустить задачу на импорт из консоли:</p>
+<p><b>CMS_SITE={$site_id} php yii cmsImport/execute/task id</b></p>
+<p>Чтобы добавить агент:</p>
+<p><b>cmsImport/execute/task id</b></p>
+HTML
+                        ,
+                    ]);
+                },
+
                 'filters' => false,
                 'backendShowings' => false,
                 'grid' => [
