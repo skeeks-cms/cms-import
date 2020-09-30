@@ -34,7 +34,6 @@ class AdminImportTaskController extends BackendModelStandartController
         $this->modelClassName       = ImportTask::class;
         
         $this->generateAccessActions = false;
-        $this->permissionName = 'cms/admin-cms-content';
         
         parent::init();
     }
