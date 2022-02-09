@@ -30,7 +30,7 @@ class AdminImportTaskController extends BackendModelStandartController
     public function init()
     {
         $this->name                 = \Yii::t('skeeks/import', 'Tasks on imports');
-        $this->modelShowAttribute   = "id";
+        $this->modelShowAttribute   = "asText";
         $this->modelClassName       = ImportTask::class;
         
         $this->generateAccessActions = false;
