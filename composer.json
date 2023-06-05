@@ -22,7 +22,7 @@
         }
     ],
     "require": {
-        "skeeks/cms": "^5.0"
+        "skeeks/cms": "^6.0"
     },
     "autoload": {
         "psr-4": {
