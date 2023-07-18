@@ -63,6 +63,10 @@ HTML
                 'filters' => false,
                 'backendShowings' => false,
                 'grid' => [
+
+                    'defaultOrder' => [
+                        'id' => SORT_DESC,
+                    ],
                     
                     'on init' => function (Event $e) {
                         /**
