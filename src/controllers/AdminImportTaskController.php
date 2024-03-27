@@ -6,6 +6,8 @@
  * @date 15.04.2016
  */
 namespace skeeks\cms\import\controllers;
+use skeeks\cms\agent\CmsAgent;
+use skeeks\cms\agent\models\CmsAgentModel;
 use skeeks\cms\backend\controllers\BackendModelStandartController;
 use skeeks\cms\helpers\RequestResponse;
 use skeeks\cms\import\ImportHandler;
@@ -89,12 +91,34 @@ HTML
                         'name' => [
                             'format' => 'raw',
                             'value' => function(ImportTask $task) {
+
                                 $result = Html::a($task->asText, '#', [
                                     'class' => 'sx-trigger-action'
                                 ]);
+
                                 if ($task->description) {
                                     $result .= "<br />" . Html::tag('small', $task->description);
                                 }
+
+                                /**
+                                 * @var $agent CmsAgentModel
+                                 */
+                                $agent = CmsAgentModel::find()->andWhere(['name' => "cmsImport/execute/task {$task->id}"])->one();
+                                if ($agent) {
+                                    if ($agent->is_active) {
+                                        $nexTime = \Yii::$app->formatter->asRelativeTime($agent->next_exec_at);
+                                        $result .= "<br />" . Html::tag('small', "Автообновление включено ({$nexTime})", [
+                                            'style' => 'color: green;'
+                                        ]);
+                                    } else {
+                                        $nexTime = \Yii::$app->formatter->asRelativeTime($agent->next_exec_at);
+                                        $result .= "<br />" . Html::tag('small', "Автообновление отключено ({$nexTime})", [
+                                            'style' => 'color: red;'
+                                        ]);
+                                    }
+
+                                }
+
                                 return $result;
                             }
                         ],
