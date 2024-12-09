@@ -5,21 +5,19 @@
  * @copyright 2010 SkeekS (СкикС)
  * @date 15.04.2016
  */
+
 namespace skeeks\cms\import\controllers;
-use skeeks\cms\agent\CmsAgent;
+
 use skeeks\cms\agent\models\CmsAgentModel;
 use skeeks\cms\backend\controllers\BackendModelStandartController;
 use skeeks\cms\helpers\RequestResponse;
 use skeeks\cms\import\ImportHandler;
 use skeeks\cms\import\models\ImportTask;
 use skeeks\cms\modules\admin\actions\modelEditor\AdminModelEditorAction;
-use skeeks\cms\modules\admin\controllers\AdminController;
-use skeeks\cms\modules\admin\controllers\AdminModelEditorController;
-use skeeks\cms\widgets\Alert;
+use skeeks\cms\rbac\CmsManager;
 use yii\base\Event;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
 
 /**
  * Class AdminImportTaskController
@@ -31,19 +29,21 @@ class AdminImportTaskController extends BackendModelStandartController
 
     public function init()
     {
-        $this->name                 = \Yii::t('skeeks/import', 'Tasks on imports');
-        $this->modelShowAttribute   = "asText";
-        $this->modelClassName       = ImportTask::class;
-        
+        $this->name = \Yii::t('skeeks/import', 'Tasks on imports');
+        $this->modelShowAttribute = "asText";
+        $this->modelClassName = ImportTask::class;
+
+
         $this->generateAccessActions = false;
-        
+        $this->permissionName = CmsManager::PERMISSION_ROLE_ADMIN_ACCESS;
+
         parent::init();
     }
 
     public function actions()
     {
         return ArrayHelper::merge(parent::actions(), [
-            'index' => [
+            'index'  => [
                 'on afterRender' => function (Event $e) {
                     $site_id = \Yii::$app->skeeks->site->id;
                     $e->content = \yii\bootstrap\Alert::widget([
@@ -62,14 +62,14 @@ HTML
                     ]);
                 },
 
-                'filters' => false,
+                'filters'         => false,
                 'backendShowings' => false,
-                'grid' => [
+                'grid'            => [
 
                     'defaultOrder' => [
                         'id' => SORT_DESC,
                     ],
-                    
+
                     'on init' => function (Event $e) {
                         /**
                          * @var $dataProvider ActiveDataProvider
@@ -79,7 +79,7 @@ HTML
 
                         $query->andWhere(['cms_site_id' => \Yii::$app->skeeks->site->id]);
                     },
-                    
+
                     'visibleColumns' => [
                         'checkbox',
                         'actions',
@@ -87,17 +87,17 @@ HTML
                         'name',
                         'component',
                     ],
-                    'columns' => [
-                        'name' => [
+                    'columns'        => [
+                        'name'      => [
                             'format' => 'raw',
-                            'value' => function(ImportTask $task) {
+                            'value'  => function (ImportTask $task) {
 
                                 $result = Html::a($task->asText, '#', [
-                                    'class' => 'sx-trigger-action'
+                                    'class' => 'sx-trigger-action',
                                 ]);
 
                                 if ($task->description) {
-                                    $result .= "<br />" . Html::tag('small', $task->description);
+                                    $result .= "<br />".Html::tag('small', $task->description);
                                 }
 
                                 /**
@@ -107,45 +107,45 @@ HTML
                                 if ($agent) {
                                     if ($agent->is_active) {
                                         $nexTime = \Yii::$app->formatter->asRelativeTime($agent->next_exec_at);
-                                        $result .= "<br />" . Html::tag('small', "Автообновление включено ({$nexTime})", [
-                                            'style' => 'color: green;'
-                                        ]);
+                                        $result .= "<br />".Html::tag('small', "Автообновление включено ({$nexTime})", [
+                                                'style' => 'color: green;',
+                                            ]);
                                     } else {
                                         $nexTime = \Yii::$app->formatter->asRelativeTime($agent->next_exec_at);
-                                        $result .= "<br />" . Html::tag('small', "Автообновление отключено ({$nexTime})", [
-                                            'style' => 'color: red;'
-                                        ]);
+                                        $result .= "<br />".Html::tag('small', "Автообновление отключено ({$nexTime})", [
+                                                'style' => 'color: red;',
+                                            ]);
                                     }
 
                                 }
 
                                 return $result;
-                            }
+                            },
                         ],
                         'component' => [
                             'format' => 'raw',
-                            'value' => function(ImportTask $task) {
+                            'value'  => function (ImportTask $task) {
                                 $result = "";
                                 if ($task->handler) {
-                                    $result = $task->handler->name . "<br />";
+                                    $result = $task->handler->name."<br />";
                                 }
                                 $result .= $task->component;
 
                                 return $result;
-                            }
-                        ]
-                    ]
-                ]
+                            },
+                        ],
+                    ],
+                ],
             ],
             'create' =>
-            [
-                'callback'         => [$this, 'create'],
-            ],
+                [
+                    'callback' => [$this, 'create'],
+                ],
 
             'update' =>
-            [
-                'callback'         => [$this, 'update'],
-            ],
+                [
+                    'callback' => [$this, 'update'],
+                ],
         ]);
     }
 
@@ -157,46 +157,39 @@ HTML
         $model = new ImportTask();
         $model->loadDefaultValues();
 
-        if ($post = \Yii::$app->request->post())
-        {
+        if ($post = \Yii::$app->request->post()) {
             $model->load($post);
         }
 
         $handler = $model->handler;
-        if ($handler)
-        {
-            if ($post = \Yii::$app->request->post())
-            {
+        if ($handler) {
+            if ($post = \Yii::$app->request->post()) {
                 $handler->load($post);
             }
         }
 
-        if ($rr->isRequestPjaxPost())
-        {
-            if (!\Yii::$app->request->post($this->notSubmitParam))
-            {
+        if ($rr->isRequestPjaxPost()) {
+            if (!\Yii::$app->request->post($this->notSubmitParam)) {
                 $model->component_settings = $handler->toArray();
                 if ($model->load(\Yii::$app->request->post()) && $handler->load(\Yii::$app->request->post())
-                    && $model->validate() && $handler->validate())
-                {
+                    && $model->validate() && $handler->validate()) {
                     $model->save();
 
-                    \Yii::$app->getSession()->setFlash('success', \Yii::t('app','Saved'));
+                    \Yii::$app->getSession()->setFlash('success', \Yii::t('app', 'Saved'));
 
                     return $this->redirect(
                         $this->url
                     );
 
-                } else
-                {
-                    \Yii::$app->getSession()->setFlash('error', \Yii::t('app','Could not save'));
+                } else {
+                    \Yii::$app->getSession()->setFlash('error', \Yii::t('app', 'Could not save'));
                 }
             }
         }
 
         return $this->render('_form', [
-            'model'     => $model,
-            'handler'   => $handler,
+            'model'   => $model,
+            'handler' => $handler,
         ]);
     }
 
@@ -208,40 +201,31 @@ HTML
 
         $model = $this->model;
 
-        if ($post = \Yii::$app->request->post())
-        {
+        if ($post = \Yii::$app->request->post()) {
             $model->load($post);
         }
 
         $handler = $model->handler;
-        if ($handler)
-        {
-            if ($post = \Yii::$app->request->post())
-            {
+        if ($handler) {
+            if ($post = \Yii::$app->request->post()) {
                 $handler->load($post);
             }
         }
 
-        if ($rr->isRequestPjaxPost())
-        {
-            if (!\Yii::$app->request->post($this->notSubmitParam))
-            {
-                if ($rr->isRequestPjaxPost())
-                {
+        if ($rr->isRequestPjaxPost()) {
+            if (!\Yii::$app->request->post($this->notSubmitParam)) {
+                if ($rr->isRequestPjaxPost()) {
                     $model->component_settings = $handler->toArray();
 
                     if ($model->load(\Yii::$app->request->post()) && $handler->load(\Yii::$app->request->post())
-                        && $model->validate() && $handler->validate())
-                    {
+                        && $model->validate() && $handler->validate()) {
                         $model->save();
 
-                        \Yii::$app->getSession()->setFlash('success', \Yii::t('app','Saved'));
+                        \Yii::$app->getSession()->setFlash('success', \Yii::t('app', 'Saved'));
 
-                        if (\Yii::$app->request->post('submit-btn') == 'apply')
-                        {
+                        if (\Yii::$app->request->post('submit-btn') == 'apply') {
 
-                        } else
-                        {
+                        } else {
                             return $this->redirect(
                                 $this->url
                             );
@@ -255,8 +239,8 @@ HTML
         }
 
         return $this->render('_form', [
-            'model'     => $model,
-            'handler'   => $handler,
+            'model'   => $model,
+            'handler' => $handler,
         ]);
     }
 
@@ -268,8 +252,7 @@ HTML
         $model = new ImportTask();
         $model->loadDefaultValues();
 
-        if ($post = \Yii::$app->request->post())
-        {
+        if ($post = \Yii::$app->request->post()) {
             $model->load($post);
         }
 
@@ -277,14 +260,11 @@ HTML
          * @var $handler ImportHandler
          */
         $handler = $model->handler;
-        if ($handler)
-        {
-            if ($post = \Yii::$app->request->post())
-            {
+        if ($handler) {
+            if ($post = \Yii::$app->request->post()) {
                 $handler->load($post);
             }
-        } else
-        {
+        } else {
             $rr->success = false;
             $rr->message = 'Компонент не настроен';
             return $rr;
@@ -293,23 +273,21 @@ HTML
         $model->validate();
         $handler->validate();
 
-        if (!$model->errors && !$handler->errors)
-        {
+        if (!$model->errors && !$handler->errors) {
             $rr->success = true;
 
             $handler->beforeExecute();
 
             $rr->data = [
-                'step'          => (int) $handler->step,
-                'total'         => (int) $handler->csvTotalRows,
-                'totalTask'     => (int) $handler->totalTask,
-                'totalSteps'    => (int) $handler->totalSteps,
-                'start'         => (int) $handler->startRow,
-                'end'           => (int) $handler->endRow,
+                'step'       => (int)$handler->step,
+                'total'      => (int)$handler->csvTotalRows,
+                'totalTask'  => (int)$handler->totalTask,
+                'totalSteps' => (int)$handler->totalSteps,
+                'start'      => (int)$handler->startRow,
+                'end'        => (int)$handler->endRow,
             ];
 
-        } else
-        {
+        } else {
             $rr->success = false;
             $rr->message = 'Проверьте правильность указанных данных';
         }
@@ -321,8 +299,8 @@ HTML
     {
         $rr = new RequestResponse();
 
-        $start  = \Yii::$app->request->post('start');
-        $end    = \Yii::$app->request->post('end');
+        $start = \Yii::$app->request->post('start');
+        $end = \Yii::$app->request->post('end');
 
         $taskData = [];
         parse_str(\Yii::$app->request->post('task'), $taskData);
@@ -337,37 +315,32 @@ HTML
         $model->validate();
         $handler->validate();
 
-        if (!$model->errors && !$handler->errors)
-        {
+        if (!$model->errors && !$handler->errors) {
             $rows = $model->handler->getCsvColumnsData($start, $end);
             $results = [];
             $totalSuccess = 0;
             $totalErrors = 0;
 
-            foreach ($rows as $number => $data)
-            {
+            foreach ($rows as $number => $data) {
                 $result = $model->handler->import($number, $data);
-                if ($result->success)
-                {
+                if ($result->success) {
                     $totalSuccess++;
-                } else
-                {
+                } else {
                     $totalErrors++;
                 }
                 $results[$number] = $result;
             }
 
-            $rr->success    = true;
+            $rr->success = true;
 
-            $rr->data       = [
-                'rows'          => $results,
-                'totalSuccess'  => $totalSuccess,
-                'totalErrors'   => $totalErrors,
+            $rr->data = [
+                'rows'         => $results,
+                'totalSuccess' => $totalSuccess,
+                'totalErrors'  => $totalErrors,
             ];
 
-            $rr->message    = 'Задание выполнено';
-        } else
-        {
+            $rr->message = 'Задание выполнено';
+        } else {
             $rr->success = false;
             $rr->message = 'Проверьте правильность указанных данных';
         }
@@ -377,8 +350,6 @@ HTML
     }
 
 
-
-
     public function actionImport()
     {
         $rr = new RequestResponse();
@@ -386,20 +357,16 @@ HTML
         $model = new ImportTask();
         $model->loadDefaultValues();
 
-        if ($post = \Yii::$app->request->post())
-        {
+        if ($post = \Yii::$app->request->post()) {
             $model->load($post);
         }
 
         $handler = $model->handler;
-        if ($handler)
-        {
-            if ($post = \Yii::$app->request->post())
-            {
+        if ($handler) {
+            if ($post = \Yii::$app->request->post()) {
                 $handler->load($post);
             }
-        } else
-        {
+        } else {
             $rr->success = false;
             $rr->message = 'Компонент не настроен';
             return $rr;
@@ -408,32 +375,28 @@ HTML
         $model->validate();
         $handler->validate();
 
-        if (!$model->errors && !$handler->errors)
-        {
+        if (!$model->errors && !$handler->errors) {
             $rr->success = true;
 
-            try
-            {
+            try {
                 $result = $handler->execute();
 
-                $log = (string) $result;
+                $log = (string)$result;
 
                 $rr->success = true;
                 $rr->data = [
-                    'html'           => <<<HTML
+                    'html' => <<<HTML
 <textarea class="form-control" rows="20" readonly>{$log}</textarea>
 HTML
-,
+                    ,
                 ];
-            } catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $rr->success = false;
                 $rr->message = $e->getMessage();
             }
 
 
-        } else
-        {
+        } else {
             $rr->success = false;
             $rr->message = 'Проверьте правильность указанных данных';
         }
