@@ -8,14 +8,14 @@
 return [
     'exportImport' => [
         "label" => \Yii::t('skeeks/import', "Export / Import"),
-        "img"   => ['\skeeks\cms\import\assets\ImportAsset', 'icons/export.png'],
+        "img"   => ['\skeeks\cms\assets\CmsAsset', 'images/icons/admin-menu/export-import.svg'],
 
         'priority' => 400,
 
         'items' => [
             "import" => [
                 "label" => \Yii::t('skeeks/import', "Import"),
-                "img"   => ['\skeeks\cms\import\assets\ImportAsset', 'icons/import.png'],
+                "img"   => ['\skeeks\cms\assets\CmsAsset', 'images/icons/admin-menu/export-import.svg'],
                 "url"   => ["cmsImport/admin-import-task"],
             ],
         ],
